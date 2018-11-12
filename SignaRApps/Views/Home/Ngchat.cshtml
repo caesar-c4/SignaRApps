@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "Ngchat";
+}
+
+<h2>Ngchat</h2>
+
+<style>
+    .alert {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+}
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: black;
+}
+</style>
+
+<div class="alert">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+   This chat app is created using angularJs, signalR and entityframework for storing users and chat messages directly to asql server
+</div>
+
+<div class="row" >
+    <div class="col-md-4" id="dvcon">
+        <input type="text" placeholder="enter name" ng-model="Name" />
+        <input type="button" ng-click="connect()" value="Create" />
+    </div>
+</div>
+<hr />
+<div class="row">
+    <table class=" table table-bordered">
+        <tr ng-repeat="m in chatMessage">
+            <td>{{m.Name}}</td>
+            <td>{{m.Msg}}</td>
+            <td>{{m.Time}}</td>
+        </tr>
+    </table>
+</div>
+<div class="row" id="dvmsg" style="display:none">
+    <input type="text" placeholder="Message" ng-model="msg" name="msg" />
+    <input type="button" value="Send" ng-click="sendchat()" />
+</div>
+<hr />
+@Html.ActionLink("Open Ngchat in a new tab", "Ngchat", "Home", new { target = "_blank" })
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>  
+    <script src="~/Scripts/jquery.signalR-2.3.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+
+
+    <script>
+       
+
+        var app = angular.module( "myapp", [] )
+            .controller( "myctrl", function ( $scope )
+            {
+                
+                var chat = $.connection.perfHub;
+                $scope.chatMessage = [];
+                chat.client.receivedMessage = function ( name, msg, now )
+                {
+                    $scope.chatMessage.push( { Name: name, Msg: msg, Time: now } );
+                    $scope.$apply();
+                }
+                $.connection.hub.start().done( function ()
+                {
+                    console.log( "connected" )
+                } )
+                $scope.connect = function ()
+                {
+                    chat.server.connect( $scope.Name );
+                    $( "#dvcon" ).hide();
+                    $( "#dvmsg" ).show();
+                }
+                $scope.sendchat = function ( evt )
+                {
+                    chat.server.send( $scope.msg );
+                    $scope.msg = " ";
+                }
+            } )
+
+
+    </script>
+}

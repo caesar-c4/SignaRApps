@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Chatbox";
+}
+
+<h1>SignalR Demo!</h1>
+<div id="popModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Popup Title</h4>
+            </div>
+            <div class="modal-body">
+                <p>Chat app created using signalR, KnockoutJs</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-md-4">
+        <input type="text" placeholder="Message" data-bind="value:message" />
+        <button class="btn btn-primary" data-bind="click:sendMessage">Send</button>
+    </div>
+    <div class="col-md-4">
+        <div data-bind="foreach:messages">
+            <div data-bind="text: $data"></div>
+        </div>
+    </div>
+</div>
+<hr />
+@Html.ActionLink("Open Chatbox in a new tab", "Chatbox", "Home", new { target = "_blank" })
+
+@*<div class="row" data-bind="foreach:counters">
+        <div class="col-md-12">
+            <h2 data-bind="text:name"></h2>
+            <canvas width="800" height="100" data-bind="attr:{'id': name}"></canvas>
+        </div>
+    </div>*@
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.signalR-2.3.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/knockout-3.4.2.js"></script>
+    <script src="~/Scripts/smoothie.js"></script>
+    <script src="~/Scripts/perfSurf.js"></script>
+
+
+    <script>
+        $( function () { $( "#popModal" ).modal( 'show' ); } );
+    </script>
+}
